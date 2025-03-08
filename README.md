@@ -1,5 +1,5 @@
 <h1 align="center">
-    <span style="font-size: 125px;">📦</span></br>
+    <img src="https://avatars.githubusercontent.com/u/202264122?s=400&u=887c5bfb9d35eb9b8861e42d885516b63f75db6d&v=4" width="75px" height="75px" style="border-radius: 20px;"></br> 
     <span style="font-size: 125px;">agentproxy</span>
   <br>
   <a href="https://github.com/yourusername/showprompt">
