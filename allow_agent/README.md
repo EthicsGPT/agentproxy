@@ -17,7 +17,7 @@
 ---
 
 ```python
-import allow-agent
+import allow_agent
 ```
 ```bash
 pip install allow-agent

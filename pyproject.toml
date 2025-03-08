@@ -25,4 +25,4 @@ Homepage = "https://github.com/EthicsGPT/allow-agent"
 Issues = "https://github.com/EthicsGPT/allow-agent/issues"
 
 [tool.setuptools]
-packages = ["allow-agent"] 
+packages = ["allow_agent"] 
