@@ -1,20 +1,39 @@
 from urllib.request import OpenerDirector, BaseHandler
 from urllib.error import URLError
 import http.client
-import logging
 import json
 import os
 from functools import wraps
 
-__version__ = "0.1.0"
+__version__ = "1.0.0"
 
-# Setup logging
-logging.basicConfig(level=logging.WARNING, format='🔒 agentproxy: %(message)s')
-logger = logging.getLogger('agentproxy')
+# Store the user-provided request filter function
+_user_request_filter = None
 
-def print_http_request(method, url, headers=None, body=None):
+def request(func):
+    """
+    Decorator to register a function as the request filter.
+    The decorated function should accept url, method, headers, and body parameters
+    and return True to allow the request or False to block it.
+    
+    Example:
+        @agentproxy.request
+        def filter_requests(url, method, headers, body):
+            if "example.com" in url:
+                return False  # Block requests to example.com
+            return True  # Allow all other requests
+    """
+    global _user_request_filter
+    _user_request_filter = func
+    return func
+
+def on_request(method, url, headers=None, body=None):
+    """
+    Called for each HTTP request intercepted by the patched libraries.
+    If a user-provided filter function is registered, it will be called to determine
+    whether the request should be allowed.
+    """
     full_url = url
-    logger.debug(f"HTTP request to {full_url}")
     should_allow = True  # Default to allowing the request
 
     # Create a record of this request
@@ -22,21 +41,23 @@ def print_http_request(method, url, headers=None, body=None):
         'method': method,
         'url': full_url,
         'headers': dict(headers) if headers else None,  # Convert CaseInsensitiveDict to regular dict
-        'body': body.decode('utf-8') if isinstance(body, bytes) else body
+        'body': json.loads(body.decode('utf-8')) if isinstance(body, bytes) else body
     }
     
-    if headers:
-        logger.debug(f"Headers: {headers}")
-        
-    if body:
+    # If a user-provided filter function is registered, call it to determine if the request should be allowed
+    if _user_request_filter:
         try:
-            body_content = json.loads(body.decode('utf-8')) if isinstance(body, bytes) else body
-
-            logger.critical(f"Body: {json.dumps(body_content, indent=3) if isinstance(body_content, dict) else f'   {body_content}'}")
-        except:
-            logger.debug(f"Body: {body}")
+            should_allow = _user_request_filter(
+                url=full_url,
+                method=method,
+                headers=headers,
+                body=body
+            )
+        except Exception as e:
+            # If the filter function raises an exception, log it and allow the request by default
+            print(f"Error in request filter function: {e}")
+            should_allow = True
     
-    logger.debug("\n")
     return should_allow  # Return whether the request should be allowed
 
 # Patch urllib.request
@@ -47,7 +68,7 @@ def patched_open(self, req, *args, **kwargs):
         body = None
         if hasattr(req, 'data') and req.data:
             body = req.data
-        should_allow = print_http_request(req.get_method(), req.full_url, headers=req.headers, body=body)
+        should_allow = on_request(req.get_method(), req.full_url, headers=req.headers, body=body)
         if not should_allow:
             raise URLError("Request cancelled by agentproxy.")
     return original_open(self, req, *args, **kwargs)
@@ -60,8 +81,9 @@ def patched_request(self, method, url, body=None, headers=None, **kwargs):
     host = self.host
     if self.port != 80 and self.port is not None:
         host = f"{host}:{self.port}"
-    full_url = f"{self.scheme}://{host}{url}"
-    should_allow = print_http_request(method, full_url, headers=headers, body=body)
+    scheme = "https" if isinstance(self, http.client.HTTPSConnection) else "http"
+    full_url = f"{scheme}://{host}{url}"
+    should_allow = on_request(method, full_url, headers=headers, body=body)
     if not should_allow:
         class RequestCancelledError(Exception):
             pass
@@ -76,7 +98,7 @@ try:
     @wraps(original_request_aiohttp)
     async def patched_aiohttp_request(self, method, url, **kwargs):
         body = kwargs.get('data') or kwargs.get('json')
-        should_allow = print_http_request(method, url, headers=kwargs.get('headers'), body=body)
+        should_allow = on_request(method, url, headers=kwargs.get('headers'), body=body)
         if not should_allow:
             raise aiohttp.ClientError("Request cancelled by agentproxy.")
         return await original_request_aiohttp(self, method, url, **kwargs)
@@ -93,7 +115,7 @@ try:
         body = None
         if request.content:
             body = request.content
-        should_allow = print_http_request(request.method, str(request.url), headers=request.headers, body=body)
+        should_allow = on_request(request.method, str(request.url), headers=request.headers, body=body)
         if not should_allow:
             raise httpx.RequestError("Request cancelled by agentproxy.")
         return original_httpx_send(self, request, **kwargs)
@@ -106,7 +128,7 @@ try:
         body = None
         if request.content:
             body = request.content
-        should_allow = print_http_request(request.method, str(request.url), headers=request.headers, body=body)
+        should_allow = on_request(request.method, str(request.url), headers=request.headers, body=body)
         if not should_allow:
             raise httpx.RequestError("Request cancelled by agentproxy.")
         return await original_httpx_async_send(self, request, **kwargs)
@@ -123,7 +145,7 @@ try:
         body = None
         if request.body:
             body = request.body
-        should_allow = print_http_request(request.method, request.url, headers=request.headers, body=body)
+        should_allow = on_request(request.method, request.url, headers=request.headers, body=body)
         if not should_allow:
             raise requests.exceptions.RequestException("Request cancelled by agentproxy.")
         return original_requests_send(self, request, **kwargs)

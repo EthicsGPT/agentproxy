@@ -39,6 +39,31 @@ pip install agentproxy
 
 ## Examples
 
+### Request Filtering
+
+```python
+import agentproxy
+
+# Register a request filter function using the decorator
+@agentproxy.request
+def request_filter(url, method, headers, body):
+    """
+    Filter HTTP requests based on your own criteria
+    Returns:
+        - False to block the request
+        - True to allow the request
+    """
+    # Block requests to specific domains
+    if "chase.com" in url:
+        return False
+    
+    # Allow all other requests
+    return True
+
+# Now all HTTP requests made using standard Python libraries
+# (requests, urllib, httpx, aiohttp) will be filtered through your function
+```
+
 ### OpenAI
 
 ```python
