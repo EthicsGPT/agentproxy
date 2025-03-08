@@ -1,26 +1,26 @@
 <h1 align="center">
     <img src="https://i.imgur.com/bFiXBTa.png" width="50px" height="50px" style="border-radius: 20px;"></br> 
-    <span style="font-size: 125px;">agentproxy</span>
+    <span style="font-size: 125px;">allow-agent</span>
   <br>
-  <a href="https://github.com/EthicsGPT/agentproxy">
+  <a href="https://github.com/EthicsGPT/allow-agent">
     <img src="https://img.shields.io/badge/%F0%9F%9B%A1%EF%B8%8F%20transparency-first-00ACD7.svg?style=flat-square">
   </a>
-  <a href="https://github.com/EthicsGPT/agentproxy">
+  <a href="https://github.com/EthicsGPT/allow-agent">
     <img src="https://img.shields.io/badge/%F0%9F%94%8D%20prompt-visibility-75C46B?style=flat-square">
   </a>
 </h1>
 
 <p align="center">
-  <em>A lightweight HTTP proxy for AI agents.</em>
+  <em>A lightweight framework to set allow policy for agents.</em>
 </p>
 
 ---
 
 ```python
-import agentproxy
+import allow-agent
 ```
 ```bash
-pip install agentproxy
+pip install allow-agent
 ```
 <br>
 
@@ -42,10 +42,10 @@ pip install agentproxy
 ### Request Filtering
 
 ```python
-import agentproxy
+import allow_agent
 
 # Register a request filter function using the decorator
-@agentproxy.request
+@allow_agent.request
 def request_filter(url, method, headers, body):
     """
     Filter HTTP requests based on your own criteria
@@ -54,7 +54,7 @@ def request_filter(url, method, headers, body):
         - True to allow the request
     """
     # Block requests to specific domains
-    if "chase.com" in url:
+    if "domain.com" in url:
         return False
     
     # Allow all other requests
@@ -67,7 +67,7 @@ def request_filter(url, method, headers, body):
 ### OpenAI
 
 ```python
-import agentproxy
+import allow_agent
 
 # Basic usage with OpenAI
 from openai import OpenAI

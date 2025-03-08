@@ -17,7 +17,7 @@ def request(func):
     and return True to allow the request or False to block it.
     
     Example:
-        @agentproxy.request
+        @allow-agent.request
         def filter_requests(url, method, headers, body):
             if "example.com" in url:
                 return False  # Block requests to example.com
@@ -70,7 +70,7 @@ def patched_open(self, req, *args, **kwargs):
             body = req.data
         should_allow = on_request(req.get_method(), req.full_url, headers=req.headers, body=body)
         if not should_allow:
-            raise URLError("Request cancelled by agentproxy.")
+            raise URLError("Request cancelled by allow-agent.")
     return original_open(self, req, *args, **kwargs)
 OpenerDirector._open = patched_open
 
@@ -87,7 +87,7 @@ def patched_request(self, method, url, body=None, headers=None, **kwargs):
     if not should_allow:
         class RequestCancelledError(Exception):
             pass
-        raise RequestCancelledError("Request cancelled by agentproxy.")
+        raise RequestCancelledError("Request cancelled by allow-agent.")
     return original_request(self, method, url, body=body, headers=headers, **kwargs)
 http.client.HTTPConnection.request = patched_request
 
@@ -100,7 +100,7 @@ try:
         body = kwargs.get('data') or kwargs.get('json')
         should_allow = on_request(method, url, headers=kwargs.get('headers'), body=body)
         if not should_allow:
-            raise aiohttp.ClientError("Request cancelled by agentproxy.")
+            raise aiohttp.ClientError("Request cancelled by allow-agent.")
         return await original_request_aiohttp(self, method, url, **kwargs)
     aiohttp.ClientSession._request = patched_aiohttp_request
 except ImportError:
@@ -117,7 +117,7 @@ try:
             body = request.content
         should_allow = on_request(request.method, str(request.url), headers=request.headers, body=body)
         if not should_allow:
-            raise httpx.RequestError("Request cancelled by agentproxy.")
+            raise httpx.RequestError("Request cancelled by allow-agent.")
         return original_httpx_send(self, request, **kwargs)
     httpx.Client.send = patched_httpx_send
     
@@ -130,7 +130,7 @@ try:
             body = request.content
         should_allow = on_request(request.method, str(request.url), headers=request.headers, body=body)
         if not should_allow:
-            raise httpx.RequestError("Request cancelled by agentproxy.")
+            raise httpx.RequestError("Request cancelled by allow-agent.")
         return await original_httpx_async_send(self, request, **kwargs)
     httpx.AsyncClient.send = patched_httpx_async_send
 except ImportError:
@@ -147,7 +147,7 @@ try:
             body = request.body
         should_allow = on_request(request.method, request.url, headers=request.headers, body=body)
         if not should_allow:
-            raise requests.exceptions.RequestException("Request cancelled by agentproxy.")
+            raise requests.exceptions.RequestException("Request cancelled by allow-agent.")
         return original_requests_send(self, request, **kwargs)
     requests.Session.send = patched_requests_send
 except ImportError:
