@@ -19,15 +19,6 @@
 ```python
 import showprompt
 ```
-
-## ✨ features
-
-- **Privacy**: Automatic PII detection and redaction
-- **Offline**: Local data processing only
-- **Simple**: One line of code integration
-- **Fast**: Optimized performance
-
-### install
 ```bash
 pip install showprompt
 ```
