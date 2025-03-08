@@ -1,0 +1,113 @@
+[
+  {
+    "method": "HEAD",
+    "url": "https://huggingface.co/protectai/deberta-v3-base-prompt-injection-v2/resolve/89b085cd330414d3e7d9dd787870f315957e1e9f/tokenizer_config.json",
+    "headers": {
+      "user-agent": "unknown/None; hf_hub/0.29.2; python/3.11.11; torch/2.6.0; transformers/4.49.0; session_id/9e81eb7453c3484fb0b2f79c34292913",
+      "Accept-Encoding": "identity",
+      "Accept": "*/*",
+      "Connection": "keep-alive"
+    },
+    "body": null,
+    "allowed": true
+  },
+  {
+    "method": "GET",
+    "url": "https://huggingface.co/protectai/deberta-v3-base-prompt-injection-v2/resolve/89b085cd330414d3e7d9dd787870f315957e1e9f/tokenizer_config.json",
+    "headers": {
+      "user-agent": "unknown/None; hf_hub/0.29.2; python/3.11.11; torch/2.6.0; transformers/4.49.0; session_id/9e81eb7453c3484fb0b2f79c34292913",
+      "Accept-Encoding": "gzip, deflate, zstd",
+      "Accept": "*/*",
+      "Connection": "keep-alive"
+    },
+    "body": null,
+    "allowed": true
+  },
+  {
+    "method": "POST",
+    "url": "https://api.openai.com/v1/chat/completions",
+    "headers": {
+      "host": "api.openai.com",
+      "accept-encoding": "gzip, deflate, zstd",
+      "connection": "keep-alive",
+      "accept": "application/json",
+      "content-type": "application/json",
+      "user-agent": "OpenAI/Python 1.65.4",
+      "x-stainless-lang": "python",
+      "x-stainless-package-version": "1.65.4",
+      "x-stainless-os": "MacOS",
+      "x-stainless-arch": "arm64",
+      "x-stainless-runtime": "CPython",
+      "x-stainless-runtime-version": "3.11.11",
+      "authorization": "Bearer your-api-key",
+      "x-stainless-async": "false",
+      "x-stainless-retry-count": "0",
+      "x-stainless-read-timeout": "600",
+      "content-length": "201"
+    },
+    "body": "{\"messages\": [{\"role\": \"system\", \"content\": \"You are a helpful assistant.\"}, {\"role\": \"user\", \"content\": \"Hi, my name is John Doe and my credit card is 4111-1111-1111-1111\"}], \"model\": \"gpt-3.5-turbo\"}",
+    "pii_detected": [
+      "4111-1111-1111",
+      "4111-1111-1111-1111"
+    ],
+    "allowed": 0
+  },
+  {
+    "method": "POST",
+    "url": "https://api.openai.com/v1/chat/completions",
+    "headers": {
+      "host": "api.openai.com",
+      "accept-encoding": "gzip, deflate, zstd",
+      "connection": "keep-alive",
+      "accept": "application/json",
+      "content-type": "application/json",
+      "user-agent": "OpenAI/Python 1.65.4",
+      "x-stainless-lang": "python",
+      "x-stainless-package-version": "1.65.4",
+      "x-stainless-os": "MacOS",
+      "x-stainless-arch": "arm64",
+      "x-stainless-runtime": "CPython",
+      "x-stainless-runtime-version": "3.11.11",
+      "authorization": "Bearer your-api-key",
+      "x-stainless-async": "false",
+      "x-stainless-retry-count": "1",
+      "x-stainless-read-timeout": "600",
+      "content-length": "201"
+    },
+    "body": "{\"messages\": [{\"role\": \"system\", \"content\": \"You are a helpful assistant.\"}, {\"role\": \"user\", \"content\": \"Hi, my name is John Doe and my credit card is 4111-1111-1111-1111\"}], \"model\": \"gpt-3.5-turbo\"}",
+    "pii_detected": [
+      "4111-1111-1111",
+      "4111-1111-1111-1111"
+    ],
+    "allowed": 0
+  },
+  {
+    "method": "POST",
+    "url": "https://api.openai.com/v1/chat/completions",
+    "headers": {
+      "host": "api.openai.com",
+      "accept-encoding": "gzip, deflate, zstd",
+      "connection": "keep-alive",
+      "accept": "application/json",
+      "content-type": "application/json",
+      "user-agent": "OpenAI/Python 1.65.4",
+      "x-stainless-lang": "python",
+      "x-stainless-package-version": "1.65.4",
+      "x-stainless-os": "MacOS",
+      "x-stainless-arch": "arm64",
+      "x-stainless-runtime": "CPython",
+      "x-stainless-runtime-version": "3.11.11",
+      "authorization": "Bearer your-api-key",
+      "x-stainless-async": "false",
+      "x-stainless-retry-count": "2",
+      "x-stainless-read-timeout": "600",
+      "content-length": "201"
+    },
+    "body": "{\"messages\": [{\"role\": \"system\", \"content\": \"You are a helpful assistant.\"}, {\"role\": \"user\", \"content\": \"Hi, my name is John Doe and my credit card is 4111-1111-1111-1111\"}], \"model\": \"gpt-3.5-turbo\"}",
+    "pii_detected": [
+      "4111-1111-1111",
+      "4111-1111-1111-1111"
+    ],
+    "allowed": 1
+  }
+]
