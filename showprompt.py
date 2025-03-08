@@ -1,17 +1,13 @@
-import urllib.request
 from urllib.request import OpenerDirector, BaseHandler
 from urllib.error import URLError
 import http.client
-import ssl
-import inspect
-import sys
 import logging
 import json
 from functools import wraps
 
 # Setup logging
-logging.basicConfig(level=logging.WARNING, format='📦 safeagent: %(message)s')
-logger = logging.getLogger('safeagent')
+logging.basicConfig(level=logging.WARNING, format='📦 showprompt: %(message)s')
+logger = logging.getLogger('showprompt')
 
 # Load existing prompts from prompts.json if it exists
 prompts_list = []
@@ -38,7 +34,7 @@ def print_http_request(method, url, headers=None, body=None):
     if body:
         try:
             body_content = json.loads(body.decode('utf-8')) if isinstance(body, bytes) else body
-            logger.debug(f"Body: {json.dumps(body_content, indent=3) if isinstance(body_content, dict) else f'   {body_content}'}")
+            logger.critical(f"Body: {json.dumps(body_content, indent=3) if isinstance(body_content, dict) else f'   {body_content}'}")
         except:
             logger.debug(f"Body: {body}")
     
@@ -63,7 +59,7 @@ def patched_open(self, req, *args, **kwargs):
             body = req.data
         should_allow = print_http_request(req.get_method(), req.full_url, headers=req.headers, body=body)
         if not should_allow:
-            raise URLError("Request cancelled due to PII concerns")
+            raise URLError("Request cancelled by showprompt.")
     return original_open(self, req, *args, **kwargs)
 OpenerDirector._open = patched_open
 
@@ -79,7 +75,7 @@ def patched_request(self, method, url, body=None, headers=None, **kwargs):
     if not should_allow:
         class RequestCancelledError(Exception):
             pass
-        raise RequestCancelledError("Request cancelled due to PII concerns")
+        raise RequestCancelledError("Request cancelled by showprompt.")
     return original_request(self, method, url, body=body, headers=headers, **kwargs)
 http.client.HTTPConnection.request = patched_request
 
@@ -92,7 +88,7 @@ try:
         body = kwargs.get('data') or kwargs.get('json')
         should_allow = print_http_request(method, url, headers=kwargs.get('headers'), body=body)
         if not should_allow:
-            raise aiohttp.ClientError("Request cancelled due to PII concerns")
+            raise aiohttp.ClientError("Request cancelled by showprompt.")
         return await original_request_aiohttp(self, method, url, **kwargs)
     aiohttp.ClientSession._request = patched_aiohttp_request
 except ImportError:
@@ -109,7 +105,7 @@ try:
             body = request.content
         should_allow = print_http_request(request.method, str(request.url), headers=request.headers, body=body)
         if not should_allow:
-            raise httpx.RequestError("Request cancelled due to PII concerns")
+            raise httpx.RequestError("Request cancelled by showprompt.")
         return original_httpx_send(self, request, **kwargs)
     httpx.Client.send = patched_httpx_send
     
@@ -122,7 +118,7 @@ try:
             body = request.content
         should_allow = print_http_request(request.method, str(request.url), headers=request.headers, body=body)
         if not should_allow:
-            raise httpx.RequestError("Request cancelled due to PII concerns")
+            raise httpx.RequestError("Request cancelled by showprompt.")
         return await original_httpx_async_send(self, request, **kwargs)
     httpx.AsyncClient.send = patched_httpx_async_send
 except ImportError:
@@ -139,10 +135,8 @@ try:
             body = request.body
         should_allow = print_http_request(request.method, request.url, headers=request.headers, body=body)
         if not should_allow:
-            raise requests.exceptions.RequestException("Request cancelled due to PII concerns")
+            raise requests.exceptions.RequestException("Request cancelled by showprompt.")
         return original_requests_send(self, request, **kwargs)
     requests.Session.send = patched_requests_send
 except ImportError:
     pass
-
-print("📦 safeagent - v0.1\n")

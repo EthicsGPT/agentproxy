@@ -2,7 +2,7 @@ import showprompt
 
 # Example usage with OpenAI
 from openai import OpenAI
-client = OpenAI(api_key="your-api-key")
+client = OpenAI(api_key="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")
 user_input = "This is a test prompt."
 response = client.chat.completions.create(
     model="gpt-3.5-turbo",
@@ -11,5 +11,4 @@ response = client.chat.completions.create(
         {"role": "user", "content": user_input}
     ]
 )
-# 📦 safeagent | Allow LLM to use this data? (y/n): 
 print(response.choices[0].message.content)
