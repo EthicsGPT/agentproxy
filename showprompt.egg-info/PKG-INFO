@@ -1,3 +1,19 @@
+Metadata-Version: 2.2
+Name: showprompt
+Version: 0.1.0
+Summary: See outgoing LLM prompts with 1 line of code
+Author-email: showprompt
+License: MIT
+Project-URL: Homepage, https://github.com/EthicsGPT/showprompt
+Project-URL: Issues, https://github.com/EthicsGPT/showprompt/issues
+Keywords: llm,prompt,ai,openai,claude,llama,debug
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+License-File: LICENSE
+
 <h1 align="center">
     <span style="font-size: 125px;">📦</span></br>
     <span style="font-size: 125px;">showprompt</span>

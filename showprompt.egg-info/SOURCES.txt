@@ -1,0 +1,11 @@
+LICENSE
+MANIFEST.in
+README.md
+pyproject.toml
+requirements.txt
+showprompt/__init__.py
+showprompt/test_showprompt.py
+showprompt.egg-info/PKG-INFO
+showprompt.egg-info/SOURCES.txt
+showprompt.egg-info/dependency_links.txt
+showprompt.egg-info/top_level.txt
