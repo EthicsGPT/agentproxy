@@ -1,6 +1,6 @@
 <h1 align="center">
     <span style="font-size: 125px;">📦</span></br>
-    <span style="font-size: 125px;">showprompt</span>
+    <span style="font-size: 125px;">agentproxy</span>
   <br>
   <a href="https://github.com/yourusername/showprompt">
     <img src="https://img.shields.io/badge/%F0%9F%9B%A1%EF%B8%8F%20transparency-first-00ACD7.svg?style=flat-square">
@@ -11,16 +11,16 @@
 </h1>
 
 <p align="center">
-  <em>Inspect in-flight LLM prompts with 1 line of code.</em>
+  <em>A simple HTTP proxy for AI agents.</em>
 </p>
 
 ---
 
 ```python
-import showprompt
+import agentproxy
 ```
 ```bash
-pip install showprompt
+pip install agentproxy
 ```
 <br>
 
@@ -42,7 +42,7 @@ pip install showprompt
 ### OpenAI
 
 ```python
-import showprompt
+import agentproxy
 
 # Basic usage with OpenAI
 from openai import OpenAI
