@@ -29,7 +29,7 @@ import showprompt
 
 ### install
 ```bash
-pip install safeagent
+pip install showprompt
 ```
 <br>
 
