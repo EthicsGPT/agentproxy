@@ -1,5 +1,5 @@
 <h1 align="center">
-    <img src="https://i.imgur.com/bFiXBTa.png" width="60px" height="60px" style="border-radius: 20px;"></br> 
+    <img src="https://i.imgur.com/bFiXBTa.png" width="50px" height="50px" style="border-radius: 20px;"></br> 
     <span style="font-size: 125px;">agentproxy</span>
   <br>
   <a href="https://github.com/EthicsGPT/agentproxy">
