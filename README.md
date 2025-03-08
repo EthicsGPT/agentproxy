@@ -17,7 +17,7 @@
 ---
 
 ```python
-import allow_agent
+from allow_agent import *
 ```
 ```bash
 pip install allow-agent
@@ -42,41 +42,17 @@ pip install allow-agent
 ### Request Filtering
 
 ```python
-import allow_agent
+from allow_agent import *
+import requests
 
-# Register a request filter function using the decorator
-@allow_agent.request
-def request_filter(url, method, headers, body):
-    """
-    Filter HTTP requests based on your own criteria
-    Returns:
-        - False to block the request
-        - True to allow the request
-    """
-    # Block requests to specific domains
-    if "domain.com" in url:
+@request # blocked example.com
+def request(url, method, headers, body):
+    if "example.com" in url:
         return False
-    
-    # Allow all other requests
-    return True
+    else:
+        return True
 
-# Now all HTTP requests made using standard Python libraries
 # (requests, urllib, httpx, aiohttp) will be filtered through your function
+print(requests.get('https://httpbin.org/get').text) # will print response from httpbin.org
+print(requests.get("https://example.com").text) # requests.exceptions.RequestException: Request cancelled by allow-agent.
 ```
-
-### OpenAI
-
-```python
-import allow_agent
-
-# Basic usage with OpenAI
-from openai import OpenAI
-client = OpenAI(api_key="your-api-key")
-response = client.chat.completions.create(
-    model="gpt-o1",
-    messages=[
-        {"role": "system", "content": "You are a helpful assistant."},
-        {"role": "user", "content": "This is a test prompt."}
-    ]
-)
-print(response.choices[0].message.content)
