@@ -1,14 +1,14 @@
 import unittest
-import showprompt
+import agentproxy
 
-class TestShowPrompt(unittest.TestCase):
+class TestAgentProxy(unittest.TestCase):
     def test_import(self):
         """Test that the package can be imported"""
-        self.assertIsNotNone(showprompt)
+        self.assertIsNotNone(agentproxy)
     
     def test_version(self):
         """Test that the package has a version"""
-        self.assertIsNotNone(showprompt.__version__)
+        self.assertIsNotNone(agentproxy.__version__)
 
 if __name__ == "__main__":
     unittest.main() 

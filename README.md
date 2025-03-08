@@ -2,10 +2,10 @@
     <img src="https://avatars.githubusercontent.com/u/202264122?s=400&u=887c5bfb9d35eb9b8861e42d885516b63f75db6d&v=4" width="75px" height="75px" style="border-radius: 20px;"></br> 
     <span style="font-size: 125px;">agentproxy</span>
   <br>
-  <a href="https://github.com/yourusername/showprompt">
+  <a href="https://github.com/EthicsGPT/agentproxy">
     <img src="https://img.shields.io/badge/%F0%9F%9B%A1%EF%B8%8F%20transparency-first-00ACD7.svg?style=flat-square">
   </a>
-  <a href="https://github.com/yourusername/showprompt">
+  <a href="https://github.com/EthicsGPT/agentproxy">
     <img src="https://img.shields.io/badge/%F0%9F%94%8D%20prompt-visibility-75C46B?style=flat-square">
   </a>
 </h1>

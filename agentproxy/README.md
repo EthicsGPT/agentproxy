@@ -1,35 +1,26 @@
 <h1 align="center">
-    <span style="font-size: 125px;">📦</span></br>
-    <span style="font-size: 125px;">showprompt</span>
+    <img src="https://avatars.githubusercontent.com/u/202264122?s=400&u=887c5bfb9d35eb9b8861e42d885516b63f75db6d&v=4" width="75px" height="75px" style="border-radius: 20px;"></br> 
+    <span style="font-size: 125px;">agentproxy</span>
   <br>
-  <a href="https://github.com/yourusername/showprompt">
+  <a href="https://github.com/EthicsGPT/agentproxy">
     <img src="https://img.shields.io/badge/%F0%9F%9B%A1%EF%B8%8F%20transparency-first-00ACD7.svg?style=flat-square">
   </a>
-  <a href="https://github.com/yourusername/showprompt">
+  <a href="https://github.com/EthicsGPT/agentproxy">
     <img src="https://img.shields.io/badge/%F0%9F%94%8D%20prompt-visibility-75C46B?style=flat-square">
   </a>
 </h1>
 
 <p align="center">
-  <em>Inspect in-flight LLM prompts with 1 line of code.</em>
+  <em>A simple HTTP proxy for AI agents.</em>
 </p>
 
 ---
 
 ```python
-import showprompt
+import agentproxy
 ```
-
-## ✨ features
-
-- **Privacy**: Automatic PII detection and redaction
-- **Offline**: Local data processing only
-- **Simple**: One line of code integration
-- **Fast**: Optimized performance
-
-### install
 ```bash
-pip install showprompt
+pip install agentproxy
 ```
 <br>
 
@@ -51,7 +42,7 @@ pip install showprompt
 ### OpenAI
 
 ```python
-import showprompt
+import agentproxy
 
 # Basic usage with OpenAI
 from openai import OpenAI

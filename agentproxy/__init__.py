@@ -9,18 +9,8 @@ from functools import wraps
 __version__ = "0.1.0"
 
 # Setup logging
-logging.basicConfig(level=logging.WARNING, format='📦 showprompt: %(message)s')
-logger = logging.getLogger('showprompt')
-
-# Ensure the prompts directory exists
-os.makedirs('prompts', exist_ok=True)
-
-# Load existing prompts from prompts.json if it exists
-prompts_list = []
-try:
-    with open('prompts/prompts.json', 'r') as f: prompts_list = json.load(f)
-except (FileNotFoundError, json.JSONDecodeError):
-    prompts_list = []
+logging.basicConfig(level=logging.WARNING, format='🔒 agentproxy: %(message)s')
+logger = logging.getLogger('agentproxy')
 
 def print_http_request(method, url, headers=None, body=None):
     full_url = url
@@ -37,20 +27,14 @@ def print_http_request(method, url, headers=None, body=None):
     
     if headers:
         logger.debug(f"Headers: {headers}")
+        
     if body:
         try:
             body_content = json.loads(body.decode('utf-8')) if isinstance(body, bytes) else body
+
             logger.critical(f"Body: {json.dumps(body_content, indent=3) if isinstance(body_content, dict) else f'   {body_content}'}")
         except:
             logger.debug(f"Body: {body}")
-    
-    # Add this request to the list and save
-    prompts_list.append(request_record)
-    try:
-        with open('prompts/prompts.json', 'w') as f:
-            json.dump(prompts_list, f, indent=2)
-    except Exception as e:
-        logger.error(f"Failed to save prompts/prompts.json: {e}")
     
     logger.debug("\n")
     return should_allow  # Return whether the request should be allowed
@@ -65,7 +49,7 @@ def patched_open(self, req, *args, **kwargs):
             body = req.data
         should_allow = print_http_request(req.get_method(), req.full_url, headers=req.headers, body=body)
         if not should_allow:
-            raise URLError("Request cancelled by showprompt.")
+            raise URLError("Request cancelled by agentproxy.")
     return original_open(self, req, *args, **kwargs)
 OpenerDirector._open = patched_open
 
@@ -81,7 +65,7 @@ def patched_request(self, method, url, body=None, headers=None, **kwargs):
     if not should_allow:
         class RequestCancelledError(Exception):
             pass
-        raise RequestCancelledError("Request cancelled by showprompt.")
+        raise RequestCancelledError("Request cancelled by agentproxy.")
     return original_request(self, method, url, body=body, headers=headers, **kwargs)
 http.client.HTTPConnection.request = patched_request
 
@@ -94,7 +78,7 @@ try:
         body = kwargs.get('data') or kwargs.get('json')
         should_allow = print_http_request(method, url, headers=kwargs.get('headers'), body=body)
         if not should_allow:
-            raise aiohttp.ClientError("Request cancelled by showprompt.")
+            raise aiohttp.ClientError("Request cancelled by agentproxy.")
         return await original_request_aiohttp(self, method, url, **kwargs)
     aiohttp.ClientSession._request = patched_aiohttp_request
 except ImportError:
@@ -111,7 +95,7 @@ try:
             body = request.content
         should_allow = print_http_request(request.method, str(request.url), headers=request.headers, body=body)
         if not should_allow:
-            raise httpx.RequestError("Request cancelled by showprompt.")
+            raise httpx.RequestError("Request cancelled by agentproxy.")
         return original_httpx_send(self, request, **kwargs)
     httpx.Client.send = patched_httpx_send
     
@@ -124,7 +108,7 @@ try:
             body = request.content
         should_allow = print_http_request(request.method, str(request.url), headers=request.headers, body=body)
         if not should_allow:
-            raise httpx.RequestError("Request cancelled by showprompt.")
+            raise httpx.RequestError("Request cancelled by agentproxy.")
         return await original_httpx_async_send(self, request, **kwargs)
     httpx.AsyncClient.send = patched_httpx_async_send
 except ImportError:
@@ -141,7 +125,7 @@ try:
             body = request.body
         should_allow = print_http_request(request.method, request.url, headers=request.headers, body=body)
         if not should_allow:
-            raise requests.exceptions.RequestException("Request cancelled by showprompt.")
+            raise requests.exceptions.RequestException("Request cancelled by agentproxy.")
         return original_requests_send(self, request, **kwargs)
     requests.Session.send = patched_requests_send
 except ImportError:
