@@ -11,7 +11,7 @@
 </h1>
 
 <p align="center">
-  <em>A simple HTTP proxy for AI agents.</em>
+  <em>A lightweight HTTP proxy for AI agents.</em>
 </p>
 
 ---
