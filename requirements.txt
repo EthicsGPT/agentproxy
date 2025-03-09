@@ -2,3 +2,6 @@ requests
 aiohttp
 httpx
 urllib3
+spacy
+en_core_web_lg
+llm-guard

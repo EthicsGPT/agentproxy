@@ -1,6 +1,6 @@
 Metadata-Version: 2.2
 Name: allow-agent
-Version: 1.0.0
+Version: 1.1.0
 Summary: A lightweight framework to set allow policy for agents.
 Author: allow-agent
 License: MIT
@@ -27,72 +27,106 @@ License-File: LICENSE
 </h1>
 
 <p align="center">
-  <em>A lightweight framework to set allow policy for agents.</em>
+  <em>A lightweight framework for monitoring and controlling AI agent API requests</em>
 </p>
 
 ---
 
-```python
-import allow_agent
-```
+## What is allow-agent?
+
+**allow-agent** is a simple yet powerful framework that automatically intercepts outbound HTTP requests made by AI agents. It gives you complete visibility and control over what your AI agents are doing behind the scenes.
+
+## Installation
+
 ```bash
 pip install allow-agent
 ```
-<br>
 
-### compatibility
+## Quick Start
 
-| Library | Status | Description |
-|------------------|--------|-------------|
-| ✅ browser-use       | Ready  | Direct browser usage via CDN/script |
-| ✅ langchain     | Ready  | LangChain framework compatibility |
-| ✅ openai        | Ready  | OpenAI API integration |
-| ✅ anthropic     | Ready  | Anthropic Claude support |
-| ✅ aisuite      | Ready  | Full AI framework compatibility |
-| ✅ requests      | Ready  | Python HTTP library integration |
+### 1. Define a Request Handler
 
-<br>
-
-## Examples
-
-### Request Filtering
+Place this at the top of your file to automatically intercept all outbound API requests:
 
 ```python
-import allow_agent
+from allow_agent import *
 
-# Register a request filter function using the decorator
-@allow_agent.request
-def request_filter(url, method, headers, body):
+# This decorator enables automatic request interception
+@request
+def request(url, method, headers, body):
     """
-    Filter HTTP requests based on your own criteria
-    Returns:
-        - False to block the request
-        - True to allow the request
+    This function is called for every outbound HTTP request
+    - Return True to allow the request to proceed
+    - Return False to block the request
+    - Modify parameters to change the request
     """
-    # Block requests to specific domains
-    if "domain.com" in url:
-        return False
     
-    # Allow all other requests
-    return True
-
-# Now all HTTP requests made using standard Python libraries
-# (requests, urllib, httpx, aiohttp) will be filtered through your function
+    # Example: Log all requests to OpenAI API
+    if url == "https://api.openai.com/v1/chat/completions":
+        print(f"OpenAI API Request: {body['messages'][0]}")
+        
+    return True  # Allow all requests by default
 ```
 
-### OpenAI
+### 2. Use AI Services Normally
+
+After setting up the request handler, use your AI services as usual. The handler will automatically intercept all outbound requests.
 
 ```python
-import allow_agent
-
-# Basic usage with OpenAI
+# Your code works normally - requests are automatically intercepted
 from openai import OpenAI
-client = OpenAI(api_key="your-api-key")
+
+client = OpenAI()
 response = client.chat.completions.create(
-    model="gpt-o1",
+    model="o1-mini",
     messages=[
         {"role": "system", "content": "You are a helpful assistant."},
         {"role": "user", "content": "This is a test prompt."}
     ]
 )
 print(response.choices[0].message.content)
+```
+
+## Common Use Cases
+
+- **Logging**: Monitor all prompts sent to AI models
+- **Content Filtering**: Block requests containing sensitive information
+- **Cost Control**: Limit the number or size of API calls
+- **Compliance**: Ensure all AI interactions follow regulatory requirements
+- **Debugging**: Inspect exactly what data is being sent to external services
+
+## Compatibility
+
+| Service/Framework | Status |
+|-------------------|--------|
+| **OpenAI API** | ✅ Supported |
+| **Anthropic** | 🔄 Coming soon |
+| **LangChain** | 🔄 Coming soon |
+| **Browser use** | 🔄 Coming soon |
+| **AI Suite** | 🔄 Coming soon |
+| **Python requests** | 🔄 Coming soon |
+| **Google Generative AI** | 🔄 Coming soon |
+
+## Advanced Examples
+
+### Selectively Block Requests
+
+```python
+@request
+def request(url, method, headers, body):
+    # Block requests containing sensitive keywords
+    if "api.openai.com" in url:
+        messages_text = str(body.get("messages", ""))
+        sensitive_terms = ["password", "credit card", "ssn"]
+        
+        for term in sensitive_terms:
+            if term in messages_text.lower():
+                print(f"Blocked request containing sensitive term: {term}")
+                return False  # Block the request
+                
+    return True  # Allow all other requests
+```
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
