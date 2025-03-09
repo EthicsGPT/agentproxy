@@ -1,30 +1,27 @@
 <h1 align="center">
-    <img src="https://i.imgur.com/bFiXBTa.png" width="50px" height="50px" style="border-radius: 20px;"></br> 
+    <span style="font-size: 125px;">👍</span><br>
     <span style="font-size: 125px;">allow-agent</span>
   <br>
-  <a href="https://github.com/EthicsGPT/allow-agent">
-    <img src="https://img.shields.io/badge/%F0%9F%9B%A1%EF%B8%8F%20transparency-first-00ACD7.svg?style=flat-square">
-  </a>
   <a href="https://github.com/EthicsGPT/allow-agent">
     <img src="https://img.shields.io/badge/%F0%9F%94%8D%20prompt-visibility-75C46B?style=flat-square">
   </a>
 </h1>
 
 <p align="center">
-  <em>A lightweight framework for monitoring and controlling AI agent API requests</em>
+  <em>A lightweight Python framework for agent request moderation.</em>
 </p>
 
 ---
-
-## What is allow-agent?
-
-**allow-agent** is a simple yet powerful framework that automatically intercepts outbound HTTP requests made by AI agents. It gives you complete visibility and control over what your AI agents are doing behind the scenes.
 
 ## Installation
 
 ```bash
 pip install allow-agent
 ```
+
+## What is allow-agent?
+
+**allow-agent** is a simple yet powerful framework that automatically intercepts outbound HTTP requests made by AI agents. It gives you complete visibility and control over what your AI agents are doing behind the scenes.
 
 ## Quick Start
 
@@ -38,23 +35,15 @@ from allow_agent import *
 # This decorator enables automatic request interception
 @request
 def request(url, method, headers, body):
-    """
-    This function is called for every outbound HTTP request
-    - Return True to allow the request to proceed
-    - Return False to block the request
-    - Modify parameters to change the request
-    """
-    
-    # Example: Log all requests to OpenAI API
     if url == "https://api.openai.com/v1/chat/completions":
         print(f"OpenAI API Request: {body['messages'][0]}")
         
     return True  # Allow all requests by default
 ```
 
-### 2. Use AI Services Normally
+### 2. Use the rest normally
 
-After setting up the request handler, use your AI services as usual. The handler will automatically intercept all outbound requests.
+The handler will automatically intercept all outbound requests. No need for any special configuration.
 
 ```python
 # Your code works normally - requests are automatically intercepted
@@ -71,29 +60,19 @@ response = client.chat.completions.create(
 print(response.choices[0].message.content)
 ```
 
-## Common Use Cases
-
-- **Logging**: Monitor all prompts sent to AI models
-- **Content Filtering**: Block requests containing sensitive information
-- **Cost Control**: Limit the number or size of API calls
-- **Compliance**: Ensure all AI interactions follow regulatory requirements
-- **Debugging**: Inspect exactly what data is being sent to external services
-
 ## Compatibility
 
-| Service/Framework | Status |
+| Library | Status |
 |-------------------|--------|
-| **OpenAI API** | ✅ Supported |
-| **Anthropic** | 🔄 Coming soon |
-| **LangChain** | 🔄 Coming soon |
-| **Browser use** | 🔄 Coming soon |
-| **AI Suite** | 🔄 Coming soon |
-| **Python requests** | 🔄 Coming soon |
-| **Google Generative AI** | 🔄 Coming soon |
+| **openai** | ✅ Supported |
+| **anthropic** | 🔄 Coming soon |
+| **langchain** | 🔄 Coming soon |
+| **browser-use** | 🔄 Coming soon |
+| **aisuite** | 🔄 Coming soon |
+| **requests** | 🔄 Coming soon |
+| **google-generativeai** | 🔄 Coming soon |
 
-## Advanced Examples
-
-### Selectively Block Requests
+### Block requests
 
 ```python
 @request
@@ -111,6 +90,14 @@ def request(url, method, headers, body):
     return True  # Allow all other requests
 ```
 
-## Contributing
+## Common Use Cases
+
+- **Logging**: Monitor all prompts sent to AI models
+- **Content Filtering**: Block requests containing sensitive information
+- **Cost Control**: Limit the number or size of API calls
+- **Compliance**: Ensure all AI interactions follow regulatory requirements
+- **Debugging**: Inspect exactly what data is being sent to external services
+
+## ⭐ Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
