@@ -98,6 +98,6 @@ def request(url, method, headers, body):
 - **Compliance**: Ensure all AI interactions follow regulatory requirements
 - **Debugging**: Inspect exactly what data is being sent to external services
 
-## Contributing
+## ⭐ Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
