@@ -18,10 +18,10 @@ def suppress_stdout_stderr():
     finally:
         sys.stdout, sys.stderr = old_stdout, old_stderr
 
+# Load llm_guard
 with suppress_stdout_stderr():
     from llm_guard.input_scanners import PromptInjection
     from llm_guard import scan_output, scan_prompt
-
     input_scanners = [PromptInjection()]
 
 

@@ -13,9 +13,6 @@ def request(url, method, headers, body):
         if safety_results["prompt_injection"]:
             return False
 
-        # If no prompt injection is detected, return True to allow the request
-        return True
-
 
 # Initialize the OpenAI client
 client = openai.OpenAI()

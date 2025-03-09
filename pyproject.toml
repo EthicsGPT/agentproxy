@@ -26,18 +26,11 @@ dependencies = [
     "httpx",
     "urllib3"
 ]
-requires-python = ">=3.7"
+requires-python = ">=3.9"
 
 [project.urls]
 Homepage = "https://github.com/EthicsGPT/allow-agent"
 Issues = "https://github.com/EthicsGPT/allow-agent/issues"
 
-[project.scripts]
-init-allow-agent-models = "allow_agent.init_models:main"
-
 [tool.setuptools]
-packages = ["allow_agent"]
-
-[tool.setuptools.build-meta]
-# This will run the initialization script after installation
-post-install-script = "allow_agent.init_models:main" 
+packages = ["allow_agent"] 

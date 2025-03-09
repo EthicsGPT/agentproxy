@@ -64,6 +64,28 @@ def on_request(method, url, headers=None, body=None):
 class AllowAgentError(Exception):
     pass
 
+# Create a mock response for blocked requests
+class MockResponse:
+    def __init__(self):
+        self.status_code = 200
+        self.reason_phrase = "OK"
+        self.headers = {}
+        self.content = b""
+        self.text = ""
+        self.is_closed = True
+    
+    def json(self):
+        return {}
+    
+    def raise_for_status(self):
+        pass
+    
+    async def aclose(self):
+        pass
+    
+    async def aread(self):
+        return self.content
+
 # Patch urllib.request
 original_open = OpenerDirector._open
 @wraps(original_open)
@@ -75,7 +97,8 @@ def patched_open(self, req, *args, **kwargs):
         should_allow = on_request(req.get_method(), req.full_url, headers=req.headers, body=body)
         if not should_allow:
             print("🔒 request cancelled by allow-agent.")
-            return "🔒 request cancelled by allow-agent."  # Return empty response instead of None
+            # Return a mock response instead of None
+            return MockResponse()
     return original_open(self, req, *args, **kwargs)
 OpenerDirector._open = patched_open
 
@@ -91,7 +114,9 @@ def patched_request(self, method, url, body=None, headers=None, **kwargs):
     should_allow = on_request(method, full_url, headers=headers, body=body)
     if not should_allow:
         print("🔒 request cancelled by allow-agent.")
-        return "🔒 request cancelled by allow-agent."  # Return empty response instead of None
+        # Set a mock response on the connection
+        self.getresponse = lambda: MockResponse()
+        return None
     return original_request(self, method, url, body=body, headers=headers, **kwargs)
 http.client.HTTPConnection.request = patched_request
 
@@ -105,7 +130,9 @@ try:
         should_allow = on_request(method, url, headers=kwargs.get('headers'), body=body)
         if not should_allow:
             print("🔒 request cancelled by allow-agent.")
-            return "🔒 request cancelled by allow-agent."  # Return empty response instead of None
+            # Return a mock response
+            mock_resp = MockResponse()
+            return mock_resp
         return await original_request_aiohttp(self, method, url, **kwargs)
     aiohttp.ClientSession._request = patched_aiohttp_request
 except ImportError:
@@ -123,8 +150,10 @@ try:
         should_allow = on_request(request.method, str(request.url), headers=request.headers, body=body)
         if not should_allow:
             print("🔒 request cancelled by allow-agent.")
-            return "🔒 request cancelled by allow-agent."  # Return empty response instead of None
-        return original_httpx_send(self, request, **kwargs)
+            # Return a mock response instead of None
+            return httpx.Response(200, content=b"", request=request)
+        resp = original_httpx_send(self, request, **kwargs)
+        return resp
     httpx.Client.send = patched_httpx_send
     
     # Patch async httpx
@@ -137,8 +166,10 @@ try:
         should_allow = on_request(request.method, str(request.url), headers=request.headers, body=body)
         if not should_allow:
             print("🔒 request cancelled by allow-agent.")
-            return "🔒 request cancelled by allow-agent."  # Return empty response instead of None
-        return await original_httpx_async_send(self, request, **kwargs)
+            # Return a mock response instead of None
+            return httpx.Response(200, content=b"", request=request)
+        resp = await original_httpx_async_send(self, request, **kwargs)
+        return resp
     httpx.AsyncClient.send = patched_httpx_async_send
 except ImportError:
     pass
@@ -155,28 +186,18 @@ try:
         should_allow = on_request(request.method, request.url, headers=request.headers, body=body)
         if not should_allow:
             print("🔒 request cancelled by allow-agent.")
-            return "🔒 request cancelled by allow-agent."  # Return empty response instead of None
+            # Return a mock response instead of None
+            mock_resp = requests.Response()
+            mock_resp.status_code = 200
+            mock_resp._content = b""
+            mock_resp.request = request
+            return mock_resp
         return original_requests_send(self, request, **kwargs)
     requests.Session.send = patched_requests_send
 except ImportError:
     pass 
 
 
-# OpenAI patch to prevent retries on cancelled requests
-try:
-    import openai
-    original_openai_request = openai._base_client.SyncAPIClient.request
-    @wraps(original_openai_request)
-    def patched_openai_request(self, cast_to, options, remaining_retries=None, *, stream=False, stream_cls=None):
-        return original_openai_request(self, cast_to, options, 0, stream=stream, stream_cls=stream_cls)
-    openai._base_client.SyncAPIClient.request = patched_openai_request
-    original_openai_async_request = openai._base_client.AsyncAPIClient.request
-    @wraps(original_openai_async_request)
-    async def patched_openai_async_request(self, cast_to, options, remaining_retries=None, *, stream=False, stream_cls=None):
-        return await original_openai_async_request(self, cast_to, options, 0, stream=stream, stream_cls=stream_cls)
-    openai._base_client.AsyncAPIClient.request = patched_openai_async_request
-except ImportError:
-    pass
 # OpenAI patch to prevent errors from exiting program
 try:
     import openai
@@ -187,32 +208,15 @@ try:
             return original_openai_chat_completions_create(self, *args, **kwargs)
         except Exception as e:
             print(f"🔒 OpenAI API error caught by allow-agent: {e}")
-            return "🔒 OpenAI API error"
+            # Return a mock completion response
+            from openai.types.chat import ChatCompletion, ChatCompletionMessage
+            return ChatCompletion(
+                id="mock-completion",
+                choices=[],
+                created=0,
+                model="",
+                object="chat.completion"
+            )
     openai.resources.chat.completions.Completions.create = patched_openai_chat_completions_create
 except ImportError:
     pass
-
-
-# Anthropic patch to prevent retries on cancelled requests
-try:
-    import anthropic
-    original_anthropic_request = anthropic._client.Client.request
-    @wraps(original_anthropic_request)
-    def patched_anthropic_request(self, cast_to, options, remaining_retries=None, *, stream=False, stream_cls=None):
-        return original_anthropic_request(self, cast_to, options, 0, stream=stream, stream_cls=stream_cls)
-    anthropic._client.Client.request = patched_anthropic_request    
-    original_anthropic_async_request = anthropic._client.AsyncClient.request
-    @wraps(original_anthropic_async_request)
-    async def patched_anthropic_async_request(self, cast_to, options, remaining_retries=None, *, stream=False, stream_cls=None):
-        return await original_anthropic_async_request(self, cast_to, options, 0, stream=stream, stream_cls=stream_cls)
-    anthropic._client.AsyncClient.request = patched_anthropic_async_request
-except ImportError:
-    pass
-
-# Import the model initialization function so it's available to users
-try:
-    from .init_models import initialize_models
-except ImportError:
-    def initialize_models():
-        print("Could not import initialization module.")
-        return False

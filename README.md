@@ -64,12 +64,12 @@ print(response.choices[0].message.content)
 
 | Library | Status |
 |-------------------|--------|
+| **browser-use** | 🔄 Coming soon |
 | **openai** | ✅ Supported |
 | **anthropic** | 🔄 Coming soon |
 | **langchain** | 🔄 Coming soon |
-| **browser-use** | 🔄 Coming soon |
 | **aisuite** | 🔄 Coming soon |
-| **requests** | 🔄 Coming soon |
+| **requests** | ✅ Coming soon |
 | **google-generativeai** | 🔄 Coming soon |
 
 ### Block requests
