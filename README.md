@@ -1,10 +1,7 @@
 <h1 align="center">
-    <span style="font-size: 125px;">👍</span><br>
+    <img src="https://i.imgur.com/bFiXBTa.png" width="50px" height="50px" style="border-radius: 20px;"><br>
     <span style="font-size: 125px;">allow-agent</span>
   <br>
-  <a href="https://github.com/EthicsGPT/allow-agent">
-    <img src="https://img.shields.io/badge/%F0%9F%94%8D%20prompt-visibility-75C46B?style=flat-square">
-  </a>
 </h1>
 
 <p align="center">
