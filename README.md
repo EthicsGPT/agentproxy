@@ -10,7 +10,7 @@
 
 ---
 
-🚧 repo is under construction 🚧
+🚧 repo is currently under construction 🚧
 
 ## Installation
 
