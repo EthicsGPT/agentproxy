@@ -8,7 +8,7 @@
 </h1>
 
 <p align="center">
-  <em>A lightweight Python framework for agent content moderation.</em>
+  <em>Python framework for controlling agent behavior.</em>
 </p>
 
 ---
